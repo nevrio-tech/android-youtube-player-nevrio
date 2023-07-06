@@ -1,30 +1,39 @@
 <!DOCTYPE html>
 <html>
-  <style type="text/css">
+    <style type="text/css">
         html, body {
             height: 100%;
             width: 100%;
             margin: 0;
             padding: 0;
-            background-color: #000000;
             overflow: hidden;
             position: fixed;
+            pointer-events: none;
+         }
+        .iv-branding {
+            display: none!important;
         }
+
     </style>
 
-  <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- defer forces the library to execute after the html page is fully parsed. -->
-    <!-- This is needed to avoid race conditions, where the library executes and calls `onYouTubeIframeAPIReady` before the page is fully parsed. -->
-    <!-- See #873 on GitHub -->
-    <script defer src="https://www.youtube.com/iframe_api"></script>
-  </head>
+    <head>
+        <meta
+                name="viewport"
+                content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <!-- defer forces the library to execute after the html page is fully parsed. -->
+        <!-- This is needed to avoid race conditions, where the library executes and calls `onYouTubeIframeAPIReady` before the page is fully parsed. -->
+        <!-- See #873 on GitHub -->
+        <script
+                defer
+                src="https://www.youtube.com/iframe_api"></script>
+    </head>
 
-  <body>
-    <div id="youTubePlayerDOM"></div>
-  </body>
+    <body>
+        <div id="youTubePlayerDOM"></div>
+        <iframe width='500' height='294' src="https://www.youtube.com/embed/S0Q4gqBUs7c?&theme=dark&autohide=2&modestbranding=0&showinfo=0&controls=0" frameborder="0"></iframe>
+    </body>
 
-  <script type="text/javascript">
+    <script type="text/javascript">
     var UNSTARTED = "UNSTARTED";
     var ENDED = "ENDED";
     var PLAYING = "PLAYING";
@@ -47,7 +56,11 @@
     	  width: '100%',
     			
         events: {
-    	    onReady: function(event) { YouTubePlayerBridge.sendReady() },
+    	    onReady: function(event) {
+                YouTubePlayerBridge.sendReady()
+                hideVideoTitle()
+                hideCaption()
+    	     },
     		  onStateChange: function(event) { sendPlayerStateChange(event.data) },
     		  onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
     		  onPlaybackRateChange: function(event) { YouTubePlayerBridge.sendPlaybackRateChange(event.data) },
@@ -166,5 +179,57 @@
       player.toggleFullscreen();
     }
 
-  </script>
+    function hideVideoTitle() {
+      setInterval(() => {
+        const playerIFrame = document.querySelector("iframe");
+        if (!playerIFrame) {
+          return;
+        }
+
+        const frameDoc = playerIFrame.contentDocument;
+        if (!frameDoc) {
+          return;
+        }
+
+        const title = frameDoc.querySelector('.ytp-chrome-top');
+        if (title) {
+          title.style.display = 'none';
+        }
+      }, 100);
+    }
+
+function playNextVideo() {
+  const playerIFrame = document.querySelector("iframe");
+  if (!playerIFrame) {
+    return;
+  }
+
+  const frameDoc = playerIFrame.contentDocument;
+  if (!frameDoc) {
+    return;
+  }
+
+  const nextVideo = frameDoc.querySelectorAll('.ytp-suggestions a')
+  if(!nextVideo){
+    return;
+  }
+
+  let videoId = nextVideo[0].href.split('v=')[1];
+  let ampersandIndex = videoId.indexOf('&');
+  if (ampersandIndex != -1) {
+  videoId = videoId.substring(0, ampersandIndex);
+  }
+  player.loadVideoById(videoId, 0);
+}
+
+function hideCaption() {
+  setInterval(() => {
+    if(!player) {
+      return;
+    }
+    player.unloadModule('captions');
+  }, 1000);
+}
+
+    </script>
 </html>

@@ -69,7 +69,7 @@ class DefaultPlayerUiController(
     override fun onStateChange(youTubePlayer: YouTubePlayer, state: PlayerConstants.PlayerState) {
       updateState(state)
 
-      if (state === PlayerConstants.PlayerState.PLAYING || state === PlayerConstants.PlayerState.PAUSED || state === PlayerConstants.PlayerState.VIDEO_CUED) {
+      /*if (state === PlayerConstants.PlayerState.PLAYING || state === PlayerConstants.PlayerState.PAUSED || state === PlayerConstants.PlayerState.VIDEO_CUED) {
         panel.setBackgroundColor(ContextCompat.getColor(panel.context, android.R.color.transparent))
         progressBar.visibility = View.GONE
 
@@ -100,7 +100,7 @@ class DefaultPlayerUiController(
           progressBar.visibility = View.GONE
           if (isPlayPauseButtonEnabled) playPauseButton.visibility = View.VISIBLE
         }
-      }
+      }*/
     }
 
     override fun onVideoId(youTubePlayer: YouTubePlayer, videoId: String) {
@@ -147,7 +147,7 @@ class DefaultPlayerUiController(
   }
 
   override fun showVideoTitle(show: Boolean): PlayerUiController {
-    videoTitle.visibility = if (show) View.VISIBLE else View.GONE
+    videoTitle.visibility = View.GONE
     return this
   }
 
@@ -158,13 +158,14 @@ class DefaultPlayerUiController(
 
   override fun showUi(show: Boolean): PlayerUiController {
     fadeControlsContainer.isDisabled = !show
-    controlsContainer.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    //controlsContainer.visibility = if (show) View.VISIBLE else View.INVISIBLE
+    controlsContainer.visibility = View.GONE
     return this
   }
 
   override fun showPlayPauseButton(show: Boolean): PlayerUiController {
-    playPauseButton.visibility = if (show) View.VISIBLE else View.GONE
-
+    //playPauseButton.visibility = if (show) View.VISIBLE else View.GONE
+    playPauseButton.visibility = View.GONE
     isPlayPauseButtonEnabled = show
     return this
   }
@@ -285,5 +286,6 @@ class DefaultPlayerUiController(
   private fun updatePlayPauseButtonIcon(playing: Boolean) {
     val drawable = if (playing) R.drawable.ayp_ic_pause_36dp else R.drawable.ayp_ic_play_36dp
     playPauseButton.setImageResource(drawable)
+    playPauseButton.visibility = View.GONE
   }
 }
