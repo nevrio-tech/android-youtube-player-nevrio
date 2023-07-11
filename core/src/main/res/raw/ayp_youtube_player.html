@@ -60,6 +60,8 @@
                 YouTubePlayerBridge.sendReady()
                 hideVideoTitle()
                 hideCaption()
+                playNextVideo()
+
     	     },
     		  onStateChange: function(event) { sendPlayerStateChange(event.data) },
     		  onPlaybackQualityChange: function(event) { YouTubePlayerBridge.sendPlaybackQualityChange(event.data) },
